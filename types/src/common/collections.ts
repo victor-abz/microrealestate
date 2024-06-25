@@ -1,7 +1,8 @@
-import { LeaseTimeRange, Locale, PaymentMethod } from './index.js';
+import { LeaseTimeRange, Locale, PaymentMethod, UserRole } from './index.js';
 
 export type MongooseDocument<T> = {
   __v: number;
+  save: () => Promise<T>;
   toObject: () => T;
 } & T;
 
@@ -31,12 +32,12 @@ export namespace CollectionTypes {
     members: {
       name: string;
       email: string;
-      role: string;
+      role: UserRole;
       registered: boolean;
     }[];
     applications: {
       name: string;
-      role: string;
+      role: UserRole;
       clientId: string;
       clientSecret: string;
       createdDate: Date;
@@ -165,18 +166,57 @@ export namespace CollectionTypes {
   export type PartRent = {
     term: number;
     total: {
+      preTaxAmount: number;
+      charges: number;
+      vat: number;
+      discount: number;
+      debts: number;
       balance: number;
       grandTotal: number;
       payment: number;
     };
+    preTaxAmounts:
+      | {
+          amount: number;
+          description: string;
+        }[]
+      | [];
+    charges:
+      | {
+          amount: number;
+          description: string;
+        }[]
+      | [];
+    debts:
+      | {
+          amount: number;
+          description: string;
+        }[]
+      | [];
+    discounts:
+      | {
+          origin: 'contract' | 'settlement';
+          amount: number;
+          description: string;
+        }[]
+      | [];
+    vats:
+      | {
+          origin: 'contract' | 'settlement';
+          amount: number;
+          description: string;
+          rate: number;
+        }[]
+      | [];
     payments:
       | {
-          date: Date;
+          date: string;
           type: PaymentMethod;
           reference: string;
           amount: number;
         }[]
       | [];
+    description: string;
   };
 
   export type Tenant = {
@@ -201,7 +241,7 @@ export namespace CollectionTypes {
     }[];
     reference: string;
     contract: string;
-    leaseId: string;
+    leaseId: string | Lease;
     beginDate: Date;
     endDate: Date;
     terminationDate: Date;

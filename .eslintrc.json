@@ -7,15 +7,6 @@
   },
   "extends": ["eslint:recommended", "plugin:import/recommended", "prettier"],
   "rules": {
-    "indent": [
-      "error",
-      2,
-      {
-        "SwitchCase": 1,
-        "offsetTernaryExpressions": true,
-        "flatTernaryExpressions": false
-      }
-    ],
     "no-unused-vars": [
       "error",
       {
@@ -23,7 +14,7 @@
       }
     ],
     "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": ["error", "always"],
     "sort-imports": [
       "error",
